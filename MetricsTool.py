@@ -136,12 +136,38 @@ def display_existing_metrics(metrics):
     if "error" in metrics:
         result_text.insert(tk.END, f"Error reading file: {metrics['error']}\n")
     else:
+        # Cyclomatic Complexity
         result_text.insert(tk.END, "Cyclomatic Complexity:\n")
         for name, complexity in metrics["Cyclomatic Complexity"]:
             result_text.insert(tk.END, f"{name}: {complexity}\n")
+            if complexity <= 10:
+                result_text.insert(tk.END, " -> Good: Low complexity, easy to maintain.\n")
+            elif complexity <= 20:
+                result_text.insert(tk.END, " -> Moderate: Manageable complexity, moderate maintenance effort required.\n")
+            else:
+                result_text.insert(tk.END, " -> Poor: High complexity, difficult to maintain and understand.\n")
+
+        # Lines of Code
         result_text.insert(tk.END, "--------------------------------------------------\n")
-        result_text.insert(tk.END, f"Lines of Code: {metrics['Lines of Code'].loc}\n")
-        result_text.insert(tk.END, f"Maintainability Index: {metrics['Maintainability Index']}\n")
+        loc = metrics['Lines of Code'].loc
+        result_text.insert(tk.END, f"Lines of Code: {loc}\n")
+        if loc < 300:
+            result_text.insert(tk.END, " -> Excellent: Small, manageable module size.\n")
+        elif loc < 1000:
+            result_text.insert(tk.END, " -> Good: Reasonably sized module.\n")
+        else:
+            result_text.insert(tk.END, " -> Warning: Large module, consider refactoring.\n")
+
+        # Maintainability Index
+        result_text.insert(tk.END, "--------------------------------------------------\n")
+        mi = metrics['Maintainability Index']
+        result_text.insert(tk.END, f"Maintainability Index: {mi}\n")
+        if mi >= 85:
+            result_text.insert(tk.END, " -> Excellent: High maintainability, easy to extend and modify.\n")
+        elif mi >= 70:
+            result_text.insert(tk.END, " -> Good: Fairly maintainable with some areas for improvement.\n")
+        else:
+            result_text.insert(tk.END, " -> Poor: Low maintainability, consider significant improvements.\n")
         result_text.insert(tk.END, "--------------------------------------------------\n")
 
 
